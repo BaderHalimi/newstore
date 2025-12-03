@@ -16,11 +16,19 @@ class GoogleAuthController extends Controller
             // التحقق من أن الإعدادات موجودة
             $clientId = Setting::get('google_client_id');
             $clientSecret = Setting::get('google_client_secret');
+            $redirectUrl = Setting::get('google_redirect_url', url('/auth/google/callback'));
 
             if (!$clientId || !$clientSecret) {
                 return redirect()->route('shop.index')
                     ->with('error', 'تسجيل الدخول عبر Google غير متاح حالياً');
             }
+
+            // تعيين الإعدادات ديناميكياً
+            config([
+                'services.google.client_id' => $clientId,
+                'services.google.client_secret' => $clientSecret,
+                'services.google.redirect' => $redirectUrl,
+            ]);
 
             return Socialite::driver('google')->redirect();
         } catch (\Exception $e) {
@@ -32,6 +40,17 @@ class GoogleAuthController extends Controller
     public function callback()
     {
         try {
+            // تعيين الإعدادات ديناميكياً
+            $clientId = Setting::get('google_client_id');
+            $clientSecret = Setting::get('google_client_secret');
+            $redirectUrl = Setting::get('google_redirect_url', url('/auth/google/callback'));
+
+            config([
+                'services.google.client_id' => $clientId,
+                'services.google.client_secret' => $clientSecret,
+                'services.google.redirect' => $redirectUrl,
+            ]);
+
             /** @var \Laravel\Socialite\Two\User $googleUser */
             $googleUser = Socialite::driver('google')->user();
 

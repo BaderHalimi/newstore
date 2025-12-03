@@ -18,17 +18,17 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static ?string $navigationLabel = 'العملاء';
+    protected static ?string $navigationLabel = 'المستخدمين الإداريين';
 
-    protected static ?string $modelLabel = 'عميل';
+    protected static ?string $modelLabel = 'مستخدم إداري';
 
-    protected static ?string $pluralModelLabel = 'العملاء';
+    protected static ?string $pluralModelLabel = 'المستخدمين الإداريين';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
-    protected static ?string $navigationGroup = 'إدارة العملاء';
+    protected static ?string $navigationGroup = 'إدارة النظام';
 
     public static function form(Form $form): Form
     {
@@ -80,24 +80,6 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->copyable(),
-
-                Tables\Columns\TextColumn::make('orders_count')
-                    ->label('عدد الطلبات')
-                    ->counts('orders')
-                    ->badge()
-                    ->color('info')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('total_spent')
-                    ->label('إجمالي المشتريات')
-                    ->formatStateUsing(function ($record) {
-                        $total = $record->orders()
-                            ->whereIn('status', ['completed', 'processing', 'shipped'])
-                            ->sum('total');
-                        return number_format($total, 0) . ' ' . Setting::get('currency_symbol', '\u20aa');
-                    })
-                    ->badge()
-                    ->color('success'),
 
                 Tables\Columns\IconColumn::make('email_verified_at')
                     ->label('البريد موثق')

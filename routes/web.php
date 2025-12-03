@@ -51,17 +51,21 @@ Route::prefix('auth')->group(function () {
 });
 
 // Auth Routes (للعملاء - بسيط)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/my-orders', function () {
-        $orders = auth()->user()->orders()->with('items.product')->latest()->get();
-        return view('account.orders', compact('orders'));
-    })->name('account.orders');
+Route::get('/my-orders', function () {
+    if (!auth('customer')->check()) {
+        return redirect()->route('shop.index')->with('error', 'يجب تسجيل الدخول أولاً');
+    }
+    $orders = auth('customer')->user()->orders()->with('items.product')->latest()->get();
+    return view('account.orders', compact('orders'));
+})->name('account.orders');
 
-    Route::get('/my-orders/{order}', function (\App\Models\Order $order) {
-        if ($order->user_id !== auth()->id()) {
-            abort(403);
-        }
-        $order->load('items.product');
-        return view('account.order-details', compact('order'));
-    })->name('account.order-details');
-});
+Route::get('/my-orders/{order}', function (\App\Models\Order $order) {
+    if (!auth('customer')->check()) {
+        return redirect()->route('shop.index')->with('error', 'يجب تسجيل الدخول أولاً');
+    }
+    if ($order->user_id !== auth('customer')->id()) {
+        abort(403);
+    }
+    $order->load('items.product');
+    return view('account.order-details', compact('order'));
+})->name('account.order-details');
