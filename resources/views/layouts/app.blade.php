@@ -1,9 +1,19 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'متجر مستحضرات التجميل')</title>
+    <title>@yield('title', $store_name ?? 'متجر مستحضرات التجميل')</title>
+
+    @if($store_favicon)
+        <link rel="icon" type="image/png" href="{{ Storage::url($store_favicon) }}">
+        <link rel="shortcut icon" type="image/png" href="{{ Storage::url($store_favicon) }}">
+        <link rel="apple-touch-icon" href="{{ Storage::url($store_favicon) }}">
+    @endif
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -49,11 +59,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
-                <a href="{{ route('shop.index') }}" class="flex items-center space-x-3 space-x-reverse">
-                    <div class="gradient-bg w-12 h-12 rounded-full flex items-center justify-center">
-                        <i class="fas fa-spa text-white text-xl"></i>
-                    </div>
-                    <span class="text-2xl font-bold gradient-text">متجر الجمال</span>
+                <a href="{{ route('shop.index') }}" class="flex items-center space-x-2 space-x-reverse">
+                    @if($store_logo)
+                        <img src="{{ Storage::url($store_logo) }}" alt="{{ $store_name ?? 'متجر الجمال' }}" class="h-12 w-auto object-contain">
+                    @else
+                        <div class="gradient-bg w-12 h-12 rounded-full flex items-center justify-center">
+                            <i class="fas fa-spa text-white text-xl"></i>
+                        </div>
+                    @endif
+                    <span class="text-2xl font-bold gradient-text">{{ $store_name ?? 'متجر الجمال' }}</span>
                 </a>
 
                 <!-- Search Bar (Desktop) -->

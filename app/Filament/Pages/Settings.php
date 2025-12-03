@@ -38,6 +38,7 @@ class Settings extends Page
             'store_phone' => Setting::get('store_phone', '+972 123 456 789'),
             'store_address' => Setting::get('store_address', 'فلسطين'),
             'store_logo' => Setting::get('store_logo'),
+            'store_favicon' => Setting::get('store_favicon'),
             'currency' => Setting::get('currency', 'ILS'),
             'currency_symbol' => Setting::get('currency_symbol', '₪'),
             'tax_rate' => Setting::get('tax_rate', 0),
@@ -87,7 +88,24 @@ class Settings extends Page
                             ->label('شعار المتجر')
                             ->image()
                             ->directory('store')
-                            ->columnSpanFull(),
+                            ->helperText('الشعار الرئيسي للموقع (يفضل PNG بخلفية شفافة)')
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                null,
+                                '16:9',
+                                '4:3',
+                                '1:1',
+                            ]),
+
+                        FileUpload::make('store_favicon')
+                            ->label('أيقونة الموقع (Favicon)')
+                            ->image()
+                            ->directory('store')
+                            ->helperText('أيقونة صغيرة تظهر في تبويب المتصفح (يفضل 32x32 أو 64x64 بكسل)')
+                            ->imageEditor()
+                            ->imageEditorAspectRatios([
+                                '1:1',
+                            ]),
                     ])->columns(2),
 
                 Section::make('إعدادات العملة والأسعار')

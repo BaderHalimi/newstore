@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\Setting;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -16,17 +17,26 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $logo = Setting::get('store_logo');
+        $favicon = Setting::get('store_favicon');
+        $brandName = Setting::get('store_name', config('app.name'));
+
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName($brandName)
+            ->brandLogo($logo ? Storage::url($logo) : null)
+            ->darkModeBrandLogo($logo ? Storage::url($logo) : null)
+            ->favicon($favicon ? Storage::url($favicon) : null)
             ->colors([
                 'primary' => Color::Amber,
             ])
