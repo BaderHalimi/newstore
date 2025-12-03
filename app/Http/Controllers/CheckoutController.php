@@ -72,7 +72,7 @@ class CheckoutController extends Controller
 
             $discount = session('coupon_discount', 0);
             $couponId = session('coupon_id');
-            
+
             $shippingCost = 0; // يمكن تعديله حسب الحاجة
             $tax = 0; // يمكن تعديله حسب الحاجة
             $total = $subtotal - $discount + $shippingCost + $tax;
@@ -125,7 +125,7 @@ class CheckoutController extends Controller
 
             // Clear cart
             $cart->items()->delete();
-            
+
             // Clear coupon session
             session()->forget(['coupon_code', 'coupon_id', 'coupon_discount']);
 

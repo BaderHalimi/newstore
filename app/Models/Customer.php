@@ -18,6 +18,7 @@ class Customer extends Authenticatable
         'google_id',
         'avatar',
         'email_verified_at',
+        'is_verified',
     ];
 
     protected $hidden = [

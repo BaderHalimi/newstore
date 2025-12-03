@@ -52,6 +52,9 @@ class Settings extends Page
             'paypal_client_id' => Setting::get('paypal_client_id'),
             'paypal_secret' => Setting::get('paypal_secret'),
             'paypal_mode' => Setting::get('paypal_mode', 'sandbox'),
+            'google_client_id' => Setting::get('google_client_id'),
+            'google_client_secret' => Setting::get('google_client_secret'),
+            'google_redirect_url' => Setting::get('google_redirect_url'),
             'order_confirmation_email' => Setting::get('order_confirmation_email', true),
             'order_shipped_email' => Setting::get('order_shipped_email', true),
             'order_delivered_email' => Setting::get('order_delivered_email', true),
@@ -232,6 +235,27 @@ class Settings extends Page
                             ->required(fn (Get $get) => $get('paypal_enabled'))
                             ->native(false),
                     ])->columns(2),
+
+                Section::make('تسجيل الدخول عبر Google')
+                    ->schema([
+                        TextInput::make('google_client_id')
+                            ->label('Google Client ID')
+                            ->maxLength(255)
+                            ->helperText('معرف العميل من Google Cloud Console'),
+
+                        TextInput::make('google_client_secret')
+                            ->label('Google Client Secret')
+                            ->password()
+                            ->maxLength(255)
+                            ->helperText('المفتاح السري من Google Cloud Console'),
+
+                        TextInput::make('google_redirect_url')
+                            ->label('Google Redirect URL')
+                            ->maxLength(255)
+                            ->default(url('/auth/google/callback'))
+                            ->helperText('رابط العودة بعد تسجيل الدخول (أضفه في Google Console)'),
+                    ])->columns(1)
+                    ->collapsible(),
 
                 Section::make('إعدادات البريد الإلكتروني')
                     ->schema([

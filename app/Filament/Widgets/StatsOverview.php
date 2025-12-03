@@ -18,7 +18,7 @@ class StatsOverview extends BaseWidget
     protected function getStats(): array
     {
         $currencySymbol = Setting::get('currency_symbol', '₪');
-        
+
         return [
             Stat::make('إجمالي المبيعات', $currencySymbol . ' ' . number_format($this->getTotalSales(), 0))
                 ->description('إجمالي المبيعات الكلية')

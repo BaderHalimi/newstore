@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'google' => [
+        'client_id' => \App\Models\Setting::get('google_client_id'),
+        'client_secret' => \App\Models\Setting::get('google_client_secret'),
+        'redirect' => \App\Models\Setting::get('google_redirect_url', url('/auth/google/callback')),
+    ],
+
 ];
