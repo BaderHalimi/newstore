@@ -26,7 +26,7 @@ class OrderResource extends Resource
     protected static ?string $pluralModelLabel = 'الطلبات';
 
     protected static ?int $navigationSort = 1;
-    
+
     protected static ?string $navigationGroup = 'المبيعات';
 
     public static function form(Form $form): Form
@@ -215,7 +215,7 @@ class OrderResource extends Resource
                     ->searchable()
                     ->preload()
                     ->native(false),
-                    
+
                 Tables\Filters\SelectFilter::make('status')
                     ->label('حالة الطلب')
                     ->options([

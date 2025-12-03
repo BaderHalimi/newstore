@@ -4,7 +4,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <form wire:submit="updateReport">
                 {{ $this->form }}
-                
+
                 <div class="mt-4">
                     <x-filament::button type="submit" color="primary">
                         تحديث التقرير

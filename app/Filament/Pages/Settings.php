@@ -17,19 +17,19 @@ use Filament\Pages\Page;
 class Settings extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
-    
+
     protected static ?string $navigationLabel = 'إعدادات المتجر';
-    
+
     protected static ?string $title = 'إعدادات المتجر';
-    
+
     protected static ?int $navigationSort = 100;
-    
+
     protected static ?string $navigationGroup = 'الإدارة';
 
     protected static string $view = 'filament.pages.settings';
-    
+
     public ?array $data = [];
-    
+
     public function mount(): void
     {
         $this->form->fill([
@@ -56,7 +56,7 @@ class Settings extends Page
             'order_delivered_email' => Setting::get('order_delivered_email', true),
         ]);
     }
-    
+
     public function form(Form $form): Form
     {
         return $form
@@ -67,29 +67,29 @@ class Settings extends Page
                             ->label('اسم المتجر')
                             ->required()
                             ->maxLength(255),
-                            
+
                         TextInput::make('store_email')
                             ->label('البريد الإلكتروني')
                             ->email()
                             ->required(),
-                            
+
                         TextInput::make('store_phone')
                             ->label('رقم الهاتف')
                             ->tel()
                             ->required(),
-                            
+
                         Textarea::make('store_address')
                             ->label('العنوان')
                             ->rows(3)
                             ->columnSpanFull(),
-                            
+
                         FileUpload::make('store_logo')
                             ->label('شعار المتجر')
                             ->image()
                             ->directory('store')
                             ->columnSpanFull(),
                     ])->columns(2),
-                    
+
                 Section::make('إعدادات العملة والأسعار')
                     ->schema([
                         Select::make('currency')
@@ -123,12 +123,12 @@ class Settings extends Page
                                 ];
                                 $set('currency_symbol', $symbols[$state] ?? '');
                             }),
-                            
+
                         TextInput::make('currency_symbol')
                             ->label('رمز العملة')
                             ->required()
                             ->maxLength(10),
-                            
+
                         TextInput::make('tax_rate')
                             ->label('نسبة الضريبة (%)')
                             ->numeric()
@@ -136,14 +136,14 @@ class Settings extends Page
                             ->maxValue(100)
                             ->default(0)
                             ->suffix('%'),
-                            
+
                         TextInput::make('shipping_cost')
                             ->label('تكلفة الشحن')
                             ->numeric()
                             ->minValue(0)
                             ->required()
                             ->suffix(fn (Get $get) => $get('currency_symbol') ?? '₪'),
-                            
+
                         TextInput::make('free_shipping_threshold')
                             ->label('الحد الأدنى للشحن المجاني')
                             ->numeric()
@@ -151,7 +151,7 @@ class Settings extends Page
                             ->helperText('اتركه 0 لتعطيل الشحن المجاني')
                             ->suffix(fn (Get $get) => $get('currency_symbol') ?? '₪'),
                     ])->columns(2),
-                    
+
                 Section::make('طرق الدفع')
                     ->description('قم بتفعيل وإعداد بوابات الدفع المطلوبة')
                     ->schema([
@@ -160,20 +160,20 @@ class Settings extends Page
                             ->default(true)
                             ->helperText('تفعيل الدفع عند الاستلام')
                             ->columnSpanFull(),
-                            
+
                         Toggle::make('stripe_enabled')
                             ->label('تفعيل Stripe')
                             ->default(false)
                             ->live()
                             ->columnSpanFull(),
-                            
+
                         TextInput::make('stripe_publishable_key')
                             ->label('Stripe Publishable Key')
                             ->maxLength(255)
                             ->visible(fn (Get $get) => $get('stripe_enabled'))
                             ->required(fn (Get $get) => $get('stripe_enabled'))
                             ->helperText('مفتاح Stripe العام (pk_...)'),
-                            
+
                         TextInput::make('stripe_secret_key')
                             ->label('Stripe Secret Key')
                             ->password()
@@ -181,20 +181,20 @@ class Settings extends Page
                             ->visible(fn (Get $get) => $get('stripe_enabled'))
                             ->required(fn (Get $get) => $get('stripe_enabled'))
                             ->helperText('مفتاح Stripe السري (sk_...)'),
-                            
+
                         Toggle::make('paypal_enabled')
                             ->label('تفعيل PayPal')
                             ->default(false)
                             ->live()
                             ->columnSpanFull(),
-                            
+
                         TextInput::make('paypal_client_id')
                             ->label('PayPal Client ID')
                             ->maxLength(255)
                             ->visible(fn (Get $get) => $get('paypal_enabled'))
                             ->required(fn (Get $get) => $get('paypal_enabled'))
                             ->helperText('معرف عميل PayPal'),
-                            
+
                         TextInput::make('paypal_secret')
                             ->label('PayPal Secret')
                             ->password()
@@ -202,7 +202,7 @@ class Settings extends Page
                             ->visible(fn (Get $get) => $get('paypal_enabled'))
                             ->required(fn (Get $get) => $get('paypal_enabled'))
                             ->helperText('المفتاح السري لـ PayPal'),
-                            
+
                         Select::make('paypal_mode')
                             ->label('PayPal Mode')
                             ->options([
@@ -214,17 +214,17 @@ class Settings extends Page
                             ->required(fn (Get $get) => $get('paypal_enabled'))
                             ->native(false),
                     ])->columns(2),
-                    
+
                 Section::make('إعدادات البريد الإلكتروني')
                     ->schema([
                         Toggle::make('order_confirmation_email')
                             ->label('إرسال بريد تأكيد الطلب')
                             ->default(true),
-                            
+
                         Toggle::make('order_shipped_email')
                             ->label('إرسال بريد عند الشحن')
                             ->default(true),
-                            
+
                         Toggle::make('order_delivered_email')
                             ->label('إرسال بريد عند التوصيل')
                             ->default(true),
@@ -232,22 +232,22 @@ class Settings extends Page
             ])
             ->statePath('data');
     }
-    
+
     public function save(): void
     {
         $data = $this->form->getState();
-        
+
         // حفظ جميع الإعدادات في قاعدة البيانات
         foreach ($data as $key => $value) {
             Setting::set($key, $value);
         }
-        
+
         Notification::make()
             ->title('تم حفظ الإعدادات بنجاح')
             ->body('تم تحديث جميع إعدادات المتجر')
             ->success()
             ->send();
-            
+
         // إعادة تحميل الصفحة لتطبيق التغييرات
         redirect()->route('filament.admin.pages.settings');
     }

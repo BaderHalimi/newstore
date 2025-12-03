@@ -14,20 +14,20 @@ use Illuminate\Support\Carbon;
 class FinancialReports extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
-    
+
     protected static ?string $navigationLabel = 'التقارير المالية';
-    
+
     protected static ?string $title = 'التقارير المالية';
-    
+
     protected static ?int $navigationSort = 1;
-    
+
     protected static ?string $navigationGroup = 'الإدارة المالية';
 
     protected static string $view = 'filament.pages.financial-reports';
-    
+
     public ?string $dateFrom = null;
     public ?string $dateTo = null;
-    
+
     public function mount(): void
     {
         $this->dateFrom = now()->startOfMonth()->format('Y-m-d');
@@ -37,7 +37,7 @@ class FinancialReports extends Page
             'date_to' => $this->dateTo,
         ]);
     }
-    
+
     public function form(Form $form): Form
     {
         return $form
@@ -56,41 +56,41 @@ class FinancialReports extends Page
                     ->columns(2),
             ]);
     }
-    
+
     public function getStats(): array
     {
         $from = Carbon::parse($this->dateFrom ?? now()->startOfMonth());
         $to = Carbon::parse($this->dateTo ?? now()->endOfMonth());
-        
+
         // إجمالي المبيعات
         $totalSales = Order::whereBetween('created_at', [$from, $to])
             ->whereIn('status', ['completed', 'processing', 'shipped'])
             ->sum('total');
-        
+
         // عدد الطلبات
         $ordersCount = Order::whereBetween('created_at', [$from, $to])->count();
-        
+
         // الإيرادات
         $income = Transaction::where('type', 'income')
             ->whereBetween('created_at', [$from, $to])
             ->sum('amount');
-        
+
         // المصروفات
         $expenses = Transaction::where('type', 'expense')
             ->whereBetween('created_at', [$from, $to])
             ->sum('amount');
-        
+
         // الاسترجاعات
         $refunds = Transaction::where('type', 'refund')
             ->whereBetween('created_at', [$from, $to])
             ->sum('amount');
-        
+
         // صافي الربح (تقريبي: 60% من المبيعات - المصروفات - الاسترجاعات)
         $netProfit = ($totalSales * 0.6) - $expenses - $refunds;
-        
+
         // متوسط قيمة الطلب
         $averageOrderValue = $ordersCount > 0 ? $totalSales / $ordersCount : 0;
-        
+
         return [
             'total_sales' => $totalSales,
             'orders_count' => $ordersCount,
@@ -101,12 +101,12 @@ class FinancialReports extends Page
             'average_order_value' => $averageOrderValue,
         ];
     }
-    
+
     public function getBestSellingProducts(): array
     {
         $from = Carbon::parse($this->dateFrom ?? now()->startOfMonth());
         $to = Carbon::parse($this->dateTo ?? now()->endOfMonth());
-        
+
         return Product::query()
             ->join('order_items', 'products.id', '=', 'order_items.product_id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
@@ -119,12 +119,12 @@ class FinancialReports extends Page
             ->get()
             ->toArray();
     }
-    
+
     public function getExpensesByCategory(): array
     {
         $from = Carbon::parse($this->dateFrom ?? now()->startOfMonth());
         $to = Carbon::parse($this->dateTo ?? now()->endOfMonth());
-        
+
         return Transaction::where('type', 'expense')
             ->whereBetween('created_at', [$from, $to])
             ->selectRaw('category, SUM(amount) as total')
@@ -140,7 +140,7 @@ class FinancialReports extends Page
                     'utilities' => 'خدمات',
                     'other_expense' => 'مصروفات أخرى',
                 ];
-                
+
                 return [
                     'category' => $categories[$item->category] ?? $item->category,
                     'total' => $item->total,
@@ -148,7 +148,7 @@ class FinancialReports extends Page
             })
             ->toArray();
     }
-    
+
     public function updateReport(): void
     {
         $data = $this->form->getState();

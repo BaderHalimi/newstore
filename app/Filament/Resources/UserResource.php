@@ -18,15 +18,15 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    
+
     protected static ?string $navigationLabel = 'العملاء';
-    
+
     protected static ?string $modelLabel = 'عميل';
-    
+
     protected static ?string $pluralModelLabel = 'العملاء';
-    
+
     protected static ?int $navigationSort = 2;
-    
+
     protected static ?string $navigationGroup = 'إدارة العملاء';
 
     public static function form(Form $form): Form
@@ -39,7 +39,7 @@ class UserResource extends Resource
                             ->label('الاسم')
                             ->required()
                             ->maxLength(255),
-                            
+
                         Forms\Components\TextInput::make('email')
                             ->label('البريد الإلكتروني')
                             ->email()
@@ -47,7 +47,7 @@ class UserResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
                     ])->columns(2),
-                    
+
                 Forms\Components\Section::make('كلمة المرور')
                     ->schema([
                         Forms\Components\TextInput::make('password')
@@ -68,25 +68,25 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('#')
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('الاسم')
                     ->searchable()
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('email')
                     ->label('البريد الإلكتروني')
                     ->searchable()
                     ->sortable()
                     ->copyable(),
-                    
+
                 Tables\Columns\TextColumn::make('orders_count')
                     ->label('عدد الطلبات')
                     ->counts('orders')
                     ->badge()
                     ->color('info')
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('total_spent')
                     ->label('إجمالي المشتريات')
                     ->formatStateUsing(function ($record) {
@@ -97,13 +97,13 @@ class UserResource extends Resource
                     })
                     ->badge()
                     ->color('success'),
-                    
+
                 Tables\Columns\IconColumn::make('email_verified_at')
                     ->label('البريد موثق')
                     ->boolean()
                     ->sortable()
                     ->toggleable(),
-                    
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('تاريخ التسجيل')
                     ->dateTime('Y-m-d H:i')
@@ -121,12 +121,12 @@ class UserResource extends Resource
                         false: fn ($query) => $query->whereNull('email_verified_at'),
                     )
                     ->native(false),
-                    
+
                 Tables\Filters\Filter::make('has_orders')
                     ->label('لديه طلبات')
                     ->query(fn ($query) => $query->has('orders'))
                     ->toggle(),
-                    
+
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('from')
