@@ -71,10 +71,29 @@ class CartController extends Controller
         ]);
 
         if ($cartItem->product->stock < $request->quantity) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'الكمية المطلوبة غير متوفرة في المخزون'
+                ], 422);
+            }
             return back()->with('error', 'الكمية المطلوبة غير متوفرة في المخزون');
         }
 
         $cartItem->update(['quantity' => $request->quantity]);
+
+        if ($request->expectsJson()) {
+            $cart = $this->getCart();
+            $cart->load('items.product');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'تم تحديث السلة بنجاح',
+                'itemSubtotal' => $cartItem->getSubtotal(),
+                'cartTotal' => $cart->getTotal(),
+                'cartItemsCount' => $cart->items->sum('quantity')
+            ]);
+        }
 
         return back()->with('success', 'تم تحديث السلة بنجاح');
     }
@@ -82,6 +101,14 @@ class CartController extends Controller
     public function remove(CartItem $cartItem)
     {
         $cartItem->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تم حذف المنتج من السلة'
+            ]);
+        }
+
         return back()->with('success', 'تم حذف المنتج من السلة');
     }
 
@@ -89,6 +116,13 @@ class CartController extends Controller
     {
         $cart = $this->getCart();
         $cart->items()->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تم تفريغ السلة بنجاح'
+            ]);
+        }
 
         return back()->with('success', 'تم تفريغ السلة بنجاح');
     }

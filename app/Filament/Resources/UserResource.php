@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\Setting;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -93,7 +94,7 @@ class UserResource extends Resource
                         $total = $record->orders()
                             ->whereIn('status', ['completed', 'processing', 'shipped'])
                             ->sum('total');
-                        return number_format($total, 0) . ' ل.س';
+                        return number_format($total, 0) . ' ' . Setting::get('currency_symbol', '\u20aa');
                     })
                     ->badge()
                     ->color('success'),

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
+use App\Models\Setting;
 use App\Models\Transaction;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -76,7 +77,7 @@ class TransactionResource extends Resource
                             ->label('المبلغ')
                             ->required()
                             ->numeric()
-                            ->prefix('ل.س')
+                            ->prefix(Setting::get('currency_symbol', '\u20aa'))
                             ->minValue(0),
                     ])->columns(3),
 
@@ -164,7 +165,7 @@ class TransactionResource extends Resource
                     ->label('المبلغ')
                     ->formatStateUsing(fn ($state, $record) =>
                         ($record->type === 'expense' || $record->type === 'refund' ? '-' : '+') .
-                        number_format($state, 0) . ' ل.س'
+                        number_format($state, 0) . ' ' . Setting::get('currency_symbol', '\u20aa')
                     )
                     ->color(fn ($record) => match ($record->type) {
                         'income' => 'success',
@@ -181,7 +182,7 @@ class TransactionResource extends Resource
                                 $expense = Transaction::where('type', 'expense')->sum('amount');
                                 $refund = Transaction::where('type', 'refund')->sum('amount');
                                 $total = $income - $expense - $refund;
-                                return number_format($total, 0) . ' ل.س';
+                                return number_format($total, 0) . ' ' . Setting::get('currency_symbol', '\u20aa');
                             }),
                     ]),
 

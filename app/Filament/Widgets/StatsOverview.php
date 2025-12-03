@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\Transaction;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -16,14 +17,16 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
+        $currencySymbol = Setting::get('currency_symbol', '₪');
+        
         return [
-            Stat::make('إجمالي المبيعات', 'ل.س ' . number_format($this->getTotalSales(), 0))
+            Stat::make('إجمالي المبيعات', $currencySymbol . ' ' . number_format($this->getTotalSales(), 0))
                 ->description('إجمالي المبيعات الكلية')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart($this->getSalesChart()),
 
-            Stat::make('مبيعات هذا الشهر', 'ل.س ' . number_format($this->getMonthSales(), 0))
+            Stat::make('مبيعات هذا الشهر', $currencySymbol . ' ' . number_format($this->getMonthSales(), 0))
                 ->description($this->getMonthComparison())
                 ->descriptionIcon($this->getMonthTrend() > 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($this->getMonthTrend() > 0 ? 'success' : 'danger'),
@@ -33,7 +36,7 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-shopping-bag')
                 ->color('warning'),
 
-            Stat::make('صافي الأرباح', 'ل.س ' . number_format($this->getProfit(), 0))
+            Stat::make('صافي الأرباح', $currencySymbol . ' ' . number_format($this->getProfit(), 0))
                 ->description('الأرباح الصافية')
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success'),
@@ -43,7 +46,7 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-cube')
                 ->color($this->getLowStockCount() > 0 ? 'warning' : 'success'),
 
-            Stat::make('متوسط قيمة الطلب', 'ل.س ' . number_format($this->getAverageOrderValue(), 0))
+            Stat::make('متوسط قيمة الطلب', $currencySymbol . ' ' . number_format($this->getAverageOrderValue(), 0))
                 ->description('متوسط سعر الطلب الواحد')
                 ->descriptionIcon('heroicon-m-calculator')
                 ->color('info'),

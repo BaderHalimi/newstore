@@ -170,19 +170,62 @@
                     @endforeach
                 </div>
 
+                <!-- Coupon Section -->
+                <div class="border-t pt-4 mb-4">
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3">لديك كود خصم؟</h3>
+                    @if(session('coupon_code'))
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <span class="text-sm font-semibold text-green-700">{{ session('coupon_code') }}</span>
+                                    <p class="text-xs text-green-600">تم تطبيق الخصم بنجاح!</p>
+                                </div>
+                                <form action="{{ route('checkout.remove-coupon') }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="text-red-500 hover:text-red-700">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <form action="{{ route('checkout.apply-coupon') }}" method="POST" class="flex gap-2">
+                            @csrf
+                            <input type="text" name="code" placeholder="أدخل كود الخصم"
+                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                   required>
+                            <button type="submit"
+                                    class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm font-semibold">
+                                تطبيق
+                            </button>
+                        </form>
+                        @if(session('coupon_error'))
+                            <p class="text-red-500 text-xs mt-2">{{ session('coupon_error') }}</p>
+                        @endif
+                    @endif
+                </div>
+
                 <!-- Totals -->
                 <div class="border-t pt-4 space-y-3">
                     <div class="flex justify-between py-3">
                         <span>المجموع الفرعي:</span>
                         <span class="font-semibold">{{ number_format($cart->getTotal(), 0) }} {{ $currency_symbol }}</span>
                     </div>
+                    @if(session('coupon_discount'))
+                        <div class="flex justify-between text-green-600">
+                            <span>الخصم ({{ session('coupon_code') }}):</span>
+                            <span class="font-semibold">- {{ number_format(session('coupon_discount'), 0) }} {{ $currency_symbol }}</span>
+                        </div>
+                    @endif
                     <div class="flex justify-between text-gray-600">
                         <span>الشحن</span>
                         <span class="font-semibold text-green-600">مجاني</span>
                     </div>
                     <div class="border-t pt-3 flex justify-between text-xl font-bold">
                         <span>المجموع الكلي</span>
-                        <span class="text-purple-600">{{ number_format($cart->getTotal(), 0) }} ل.س</span>
+                        <span class="text-purple-600">
+                            {{ number_format($cart->getTotal() - (session('coupon_discount') ?? 0), 0) }} {{ $currency_symbol }}
+                        </span>
                     </div>
                 </div>
 

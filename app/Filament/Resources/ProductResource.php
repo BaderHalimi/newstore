@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use App\Models\Setting;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -74,12 +75,12 @@ class ProductResource extends Resource
                             ->label('السعر')
                             ->required()
                             ->numeric()
-                            ->prefix('ل.س'),
+                            ->prefix(Setting::get('currency_symbol', '\u20aa')),
 
                         Forms\Components\TextInput::make('sale_price')
                             ->label('سعر الخصم')
                             ->numeric()
-                            ->prefix('ل.س')
+                            ->prefix(Setting::get('currency_symbol', '\u20aa'))
                             ->helperText('اتركه فارغاً إذا لم يكن هناك خصم'),
 
                         Forms\Components\TextInput::make('stock')

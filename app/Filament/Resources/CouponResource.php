@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CouponResource\Pages;
 use App\Filament\Resources\CouponResource\RelationManagers;
 use App\Models\Coupon;
+use App\Models\Setting;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -57,15 +58,15 @@ class CouponResource extends Resource
                             ->label('قيمة الخصم')
                             ->required()
                             ->numeric()
-                            ->suffix(fn ($get) => $get('type') === 'percentage' ? '%' : 'ل.س')
-                            ->helperText(fn ($get) => $get('type') === 'percentage' ? 'أدخل النسبة المئوية (مثال: 10 = 10%)' : 'أدخل المبلغ بالليرة السورية'),
+                            ->suffix(fn ($get) => $get('type') === 'percentage' ? '%' : Setting::get('currency_symbol', '\u20aa'))
+                            ->helperText(fn ($get) => $get('type') === 'percentage' ? 'أدخل النسبة المئوية (مثال: 10 = 10%)' : 'أدخل المبلغ'),
 
                         Forms\Components\TextInput::make('min_purchase')
                             ->label('الحد الأدنى للشراء')
                             ->required()
                             ->numeric()
                             ->default(0)
-                            ->prefix('ل.س')
+                            ->prefix(Setting::get('currency_symbol', '\u20aa'))
                             ->helperText('أقل مبلغ يجب أن يدفعه العميل لاستخدام الكوبون'),
                     ])->columns(2),
 
@@ -131,12 +132,12 @@ class CouponResource extends Resource
 
                 Tables\Columns\TextColumn::make('value')
                     ->label('القيمة')
-                    ->formatStateUsing(fn ($record) => $record->type === 'percentage' ? $record->value . '%' : number_format($record->value, 0) . ' ل.س')
+                    ->formatStateUsing(fn ($record) => $record->type === 'percentage' ? $record->value . '%' : number_format($record->value, 0) . ' ' . Setting::get('currency_symbol', '\u20aa'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('min_purchase')
                     ->label('الحد الأدنى للشراء')
-                    ->formatStateUsing(fn ($state) => number_format($state, 0) . ' ل.س')
+                    ->formatStateUsing(fn ($state) => number_format($state, 0) . ' ' . Setting::get('currency_symbol', '\u20aa'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('usage')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
@@ -69,9 +70,12 @@ class CheckoutController extends Controller
                 $subtotal += $item->product->getCurrentPrice() * $item->quantity;
             }
 
+            $discount = session('coupon_discount', 0);
+            $couponId = session('coupon_id');
+            
             $shippingCost = 0; // يمكن تعديله حسب الحاجة
             $tax = 0; // يمكن تعديله حسب الحاجة
-            $total = $subtotal + $shippingCost + $tax;
+            $total = $subtotal - $discount + $shippingCost + $tax;
 
             // Create order
             $order = Order::create([
@@ -89,6 +93,8 @@ class CheckoutController extends Controller
                 'shipping_zip' => $validated['shipping_zip'] ?? null,
                 'notes' => $validated['notes'] ?? null,
                 'subtotal' => $subtotal,
+                'discount' => $discount,
+                'coupon_id' => $couponId,
                 'shipping_cost' => $shippingCost,
                 'tax' => $tax,
                 'total' => $total,
@@ -109,8 +115,19 @@ class CheckoutController extends Controller
                 $item->product->decrement('stock', $item->quantity);
             }
 
+            // Update coupon usage
+            if ($couponId) {
+                $coupon = Coupon::find($couponId);
+                if ($coupon) {
+                    $coupon->increment('used_count');
+                }
+            }
+
             // Clear cart
             $cart->items()->delete();
+            
+            // Clear coupon session
+            session()->forget(['coupon_code', 'coupon_id', 'coupon_discount']);
 
             DB::commit();
 
@@ -134,5 +151,47 @@ class CheckoutController extends Controller
     public function success(Order $order)
     {
         return view('checkout.success', compact('order'));
+    }
+
+    public function applyCoupon(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string'
+        ]);
+
+        $coupon = Coupon::where('code', strtoupper($request->code))
+            ->where('is_active', true)
+            ->first();
+
+        if (!$coupon || !$coupon->isValid()) {
+            return back()->with('coupon_error', 'الكوبون غير صحيح أو منتهي الصلاحية');
+        }
+
+        $cart = $this->getCart();
+        if (!$cart) {
+            return back()->with('coupon_error', 'السلة فارغة');
+        }
+
+        $subtotal = $cart->getTotal();
+
+        if ($subtotal < $coupon->min_purchase) {
+            return back()->with('coupon_error', "الحد الأدنى للشراء هو " . number_format((float)$coupon->min_purchase, 0));
+        }
+
+        $discount = $coupon->calculateDiscount($subtotal);
+
+        session([
+            'coupon_code' => $coupon->code,
+            'coupon_id' => $coupon->id,
+            'coupon_discount' => $discount
+        ]);
+
+        return back()->with('success', 'تم تطبيق الكوبون بنجاح');
+    }
+
+    public function removeCoupon()
+    {
+        session()->forget(['coupon_code', 'coupon_id', 'coupon_discount']);
+        return back()->with('success', 'تم إزالة الكوبون');
     }
 }
