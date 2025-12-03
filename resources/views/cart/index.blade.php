@@ -35,8 +35,8 @@
                                 </a>
                             </h3>
                             <p class="text-sm text-gray-500 mb-2">{{ $item->product->category->name }}</p>
-                            <p class="text-lg font-bold text-purple-600">
-                                {{ number_format($item->product->getCurrentPrice(), 0) }} ل.س
+                            <p class="text-lg font-semibold text-gray-900">
+                                {{ number_format($item->product->getCurrentPrice(), 0) }} {{ $currency_symbol }}
                             </p>
                         </div>
 
@@ -54,8 +54,8 @@
 
                         <!-- Subtotal & Remove -->
                         <div class="text-left">
-                            <p class="text-xl font-bold text-gray-900 mb-2">
-                                {{ number_format($item->getSubtotal(), 0) }} ل.س
+                            <p class="text-xl font-bold text-purple-600">
+                                {{ number_format($item->getSubtotal(), 0) }} {{ $currency_symbol }}
                             </p>
                             <form action="{{ route('cart.remove', $item) }}" method="POST">
                                 @csrf

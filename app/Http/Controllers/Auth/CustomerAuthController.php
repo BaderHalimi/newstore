@@ -44,17 +44,18 @@ class CustomerAuthController extends Controller
 
         // إرسال البريد
         try {
-            Mail::raw(
-                "مرحباً {$customer->name}!\n\n" .
-                "شكراً لتسجيلك في متجرنا.\n\n" .
-                "رمز التفعيل الخاص بك هو: {$otp}\n\n" .
-                "الرمز صالح لمدة 15 دقيقة.\n\n" .
-                "إذا لم تقم بإنشاء هذا الحساب، يرجى تجاهل هذا البريد.",
-                function ($message) use ($customer) {
-                    $message->to($customer->email)
-                        ->subject('تفعيل حسابك - رمز التحقق');
-                }
-            );
+            $storeName = \App\Models\Setting::get('store_name', config('app.name'));
+            $logo = \App\Models\Setting::get('store_logo');
+
+            Mail::send('emails.otp-verification', [
+                'customerName' => $customer->name,
+                'otp' => $otp,
+                'storeName' => $storeName,
+                'logo' => $logo
+            ], function ($message) use ($customer, $storeName) {
+                $message->to($customer->email)
+                    ->subject($storeName . ' - تفعيل حسابك');
+            });
         } catch (\Exception $e) {
             // في حال فشل الإرسال، نسجل خطأ لكن نكمل
             \Log::error('فشل إرسال بريد التفعيل: ' . $e->getMessage());
@@ -145,15 +146,18 @@ class CustomerAuthController extends Controller
         ]);
 
         try {
-            Mail::raw(
-                "مرحباً {$customer->name}!\n\n" .
-                "رمز التفعيل الجديد الخاص بك هو: {$otp}\n\n" .
-                "الرمز صالح لمدة 15 دقيقة.",
-                function ($message) use ($customer) {
-                    $message->to($customer->email)
-                        ->subject('رمز التفعيل الجديد');
-                }
-            );
+            $storeName = \App\Models\Setting::get('store_name', config('app.name'));
+            $logo = \App\Models\Setting::get('store_logo');
+
+            Mail::send('emails.otp-verification', [
+                'customerName' => $customer->name,
+                'otp' => $otp,
+                'storeName' => $storeName,
+                'logo' => $logo
+            ], function ($message) use ($customer, $storeName) {
+                $message->to($customer->email)
+                    ->subject($storeName . ' - رمز التفعيل الجديد');
+            });
 
             return response()->json([
                 'success' => true,
@@ -194,9 +198,18 @@ class CustomerAuthController extends Controller
 
         // إرسال البريد
         try {
-            Mail::raw("رمز تسجيل الدخول الخاص بك هو: {$code}\n\nالرمز صالح لمدة 10 دقائق.", function ($message) use ($request) {
+            $customer = Customer::where('email', $request->email)->first();
+            $storeName = \App\Models\Setting::get('store_name', config('app.name'));
+            $logo = \App\Models\Setting::get('store_logo');
+
+            Mail::send('emails.otp-verification', [
+                'customerName' => $customer->name,
+                'otp' => $code,
+                'storeName' => $storeName,
+                'logo' => $logo
+            ], function ($message) use ($request, $storeName) {
                 $message->to($request->email)
-                    ->subject('رمز تسجيل الدخول');
+                    ->subject($storeName . ' - رمز تسجيل الدخول');
             });
 
             return response()->json([

@@ -60,7 +60,7 @@
                             @endswitch
                         </span>
                         <p class="text-2xl font-bold text-purple-600">
-                            {{ number_format($order->total, 0) }} ل.س
+                            {{ number_format($order->total, 0) }} {{ $currency_symbol }}
                         </p>
                     </div>
                 </div>

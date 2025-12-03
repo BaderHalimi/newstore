@@ -140,7 +140,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600 dark:text-green-400">
-                                    {{ number_format($product['total_revenue'], 0) }} ل.س
+                                    {{ number_format($product['total_revenue'], 0) }} {{ $currency_symbol }}
                                 </td>
                             </tr>
                         @empty
@@ -169,7 +169,7 @@
                     <div class="mb-4 last:mb-0">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $expense['category'] }}</span>
-                            <span class="text-sm font-bold text-gray-900 dark:text-white">{{ number_format($expense['total'], 0) }} ل.س</span>
+                            <span class="text-sm font-bold text-gray-900 dark:text-white">{{ number_format($expense['total'], 0) }} {{ $currency_symbol }}</span>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                             @php

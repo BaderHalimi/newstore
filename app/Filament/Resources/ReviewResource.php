@@ -43,9 +43,9 @@ class ReviewResource extends Resource
                             ->preload()
                             ->native(false),
 
-                        Forms\Components\Select::make('user_id')
-                            ->label('المستخدم')
-                            ->relationship('user', 'name')
+                        Forms\Components\Select::make('customer_id')
+                            ->label('العميل')
+                            ->relationship('customer', 'name')
                             ->searchable()
                             ->preload()
                             ->native(false)

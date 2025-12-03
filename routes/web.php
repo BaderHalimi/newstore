@@ -17,6 +17,10 @@ Route::get('/test-auth', function () {
     return view('test-auth');
 })->name('test.auth');
 
+Route::get('/auth-test', function () {
+    return view('auth-test-simple');
+})->name('auth.test');
+
 // Cart Routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');

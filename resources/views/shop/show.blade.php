@@ -62,15 +62,15 @@
             <!-- Price -->
             <div class="mb-6">
                 @if($product->isOnSale())
-                    <div class="flex items-center">
-                        <span class="text-4xl font-bold text-purple-600">{{ number_format($product->sale_price, 0) }} ل.س</span>
-                        <span class="text-2xl text-gray-400 line-through mr-4">{{ number_format($product->price, 0) }} ل.س</span>
+                    <div class="flex items-center gap-4">
+                        <span class="text-4xl font-bold text-purple-600">{{ number_format($product->sale_price, 0) }} {{ $currency_symbol }}</span>
+                        <span class="text-2xl text-gray-400 line-through mr-4">{{ number_format($product->price, 0) }} {{ $currency_symbol }}</span>
                         <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold mr-4">
                             خصم {{ round((($product->price - $product->sale_price) / $product->price) * 100) }}%
                         </span>
                     </div>
                 @else
-                    <span class="text-4xl font-bold text-purple-600">{{ number_format($product->price, 0) }} ل.س</span>
+                    <span class="text-4xl font-bold text-purple-600">{{ number_format($product->price, 0) }} {{ $currency_symbol }}</span>
                 @endif
             </div>
 
@@ -162,11 +162,11 @@
                     <div class="flex items-center justify-between mb-4">
                         @if($relatedProduct->isOnSale())
                             <div>
-                                <span class="text-xl font-bold text-purple-600">{{ number_format($relatedProduct->sale_price, 0) }} ل.س</span>
-                                <span class="text-sm text-gray-400 line-through mr-2">{{ number_format($relatedProduct->price, 0) }} ل.س</span>
+                                <span class="text-xl font-bold text-purple-600">{{ number_format($relatedProduct->sale_price, 0) }} {{ $currency_symbol }}</span>
+                                <span class="text-sm text-gray-400 line-through mr-2">{{ number_format($relatedProduct->price, 0) }} {{ $currency_symbol }}</span>
                             </div>
                         @else
-                            <span class="text-xl font-bold text-purple-600">{{ number_format($relatedProduct->price, 0) }} ل.س</span>
+                            <span class="text-xl font-bold text-purple-600">{{ number_format($relatedProduct->price, 0) }} {{ $currency_symbol }}</span>
                         @endif
                     </div>
 

@@ -172,9 +172,9 @@
 
                 <!-- Totals -->
                 <div class="border-t pt-4 space-y-3">
-                    <div class="flex justify-between text-gray-600">
-                        <span>المجموع الفرعي</span>
-                        <span class="font-semibold">{{ number_format($cart->getTotal(), 0) }} ل.س</span>
+                    <div class="flex justify-between py-3">
+                        <span>المجموع الفرعي:</span>
+                        <span class="font-semibold">{{ number_format($cart->getTotal(), 0) }} {{ $currency_symbol }}</span>
                     </div>
                     <div class="flex justify-between text-gray-600">
                         <span>الشحن</span>

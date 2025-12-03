@@ -85,12 +85,12 @@
 
                     <div>
                         <h3 class="font-semibold text-gray-900 text-lg">{{ $item->product_name }}</h3>
-                        <p class="text-gray-600">{{ number_format($item->price, 0) }} ل.س × {{ $item->quantity }}</p>
+                        <p class="text-gray-600">{{ number_format($item->price, 0) }} {{ $currency_symbol }} × {{ $item->quantity }}</p>
                     </div>
                 </div>
 
                 <p class="text-xl font-bold text-gray-900">
-                    {{ number_format($item->total, 0) }} ل.س
+                    {{ number_format($item->total, 0) }} {{ $currency_symbol }}
                 </p>
             </div>
             @endforeach
@@ -100,13 +100,13 @@
         <div class="border-t mt-6 pt-6 space-y-3">
             <div class="flex justify-between text-gray-600">
                 <span>المجموع الفرعي</span>
-                <span class="font-semibold">{{ number_format($order->subtotal, 0) }} ل.س</span>
+                <span class="font-semibold">{{ number_format($order->subtotal, 0) }} {{ $currency_symbol }}</span>
             </div>
             <div class="flex justify-between text-gray-600">
                 <span>الشحن</span>
                 <span class="font-semibold">
                     @if($order->shipping_cost > 0)
-                        {{ number_format($order->shipping_cost, 0) }} ل.س
+                        {{ number_format($order->shipping_cost, 0) }} {{ $currency_symbol }}
                     @else
                         <span class="text-green-600">مجاني</span>
                     @endif
@@ -115,18 +115,18 @@
             @if($order->tax > 0)
             <div class="flex justify-between text-gray-600">
                 <span>الضريبة</span>
-                <span class="font-semibold">{{ number_format($order->tax, 0) }} ل.س</span>
+                <span class="font-semibold">{{ number_format($order->tax, 0) }} {{ $currency_symbol }}</span>
             </div>
             @endif
             @if($order->discount > 0)
             <div class="flex justify-between text-green-600">
                 <span>الخصم</span>
-                <span class="font-semibold">-{{ number_format($order->discount, 0) }} ل.س</span>
+                <span class="font-semibold">-{{ number_format($order->discount, 0) }} {{ $currency_symbol }}</span>
             </div>
             @endif
             <div class="border-t pt-3 flex justify-between text-2xl font-bold">
                 <span>المجموع الكلي</span>
-                <span class="text-purple-600">{{ number_format($order->total, 0) }} ل.س</span>
+                <span class="text-purple-600">{{ number_format($order->total, 0) }} {{ $currency_symbol }}</span>
             </div>
         </div>
     </div>

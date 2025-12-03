@@ -77,11 +77,11 @@
                     <div class="flex items-center justify-between mb-4">
                         @if($product->isOnSale())
                             <div>
-                                <span class="text-2xl font-bold text-purple-600">{{ number_format($product->sale_price, 0) }} ل.س</span>
-                                <span class="text-sm text-gray-400 line-through mr-2">{{ number_format($product->price, 0) }} ل.س</span>
+                                <span class="text-2xl font-bold text-purple-600">{{ number_format($product->sale_price, 0) }} {{ $currency_symbol }}</span>
+                                <span class="text-sm text-gray-400 line-through mr-2">{{ number_format($product->price, 0) }} {{ $currency_symbol }}</span>
                             </div>
                         @else
-                            <span class="text-2xl font-bold text-purple-600">{{ number_format($product->price, 0) }} ل.س</span>
+                            <span class="text-2xl font-bold text-purple-600">{{ number_format($product->price, 0) }} {{ $currency_symbol }}</span>
                         @endif
                     </div>
 

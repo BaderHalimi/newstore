@@ -573,4 +573,6 @@ class AuthModal {
 let authModal;
 document.addEventListener('DOMContentLoaded', () => {
     authModal = new AuthModal();
+    // console.log('✓ Auth Modal initialized successfully');
+    // console.log('✓ CSRF Token:', document.querySelector('meta[name="csrf-token"]')?.content);
 });

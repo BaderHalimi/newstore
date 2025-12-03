@@ -63,7 +63,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-gray-600 mb-1">المبلغ الإجمالي</p>
-                    <p class="text-2xl font-bold text-purple-600">{{ number_format($order->total, 0) }} ل.س</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ number_format($order->total, 0) }} {{ $currency_symbol }}</p>
                 </div>
             </div>
         </div>
@@ -100,7 +100,7 @@
                             <p class="text-sm text-gray-600">الكمية: {{ $item->quantity }}</p>
                         </div>
                     </div>
-                    <p class="font-bold text-gray-900">{{ number_format($item->total, 0) }} ل.س</p>
+                    <p class="font-bold text-gray-900">{{ number_format($item->total, 0) }} {{ $currency_symbol }}</p>
                 </div>
                 @endforeach
             </div>
