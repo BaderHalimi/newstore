@@ -88,11 +88,37 @@
                         الرئيسية
                     </a>
 
-                    @auth
+                    @auth('customer')
                         <a href="{{ route('account.orders') }}" class="text-gray-700 hover:text-purple-600 transition">
                             <i class="fas fa-box ml-1"></i>
                             طلباتي
                         </a>
+
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 space-x-reverse text-gray-700 hover:text-purple-600 transition">
+                                <i class="fas fa-user-circle text-2xl"></i>
+                                <span>{{ auth('customer')->user()->name }}</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden group-hover:block z-50">
+                                <a href="{{ route('account.orders') }}" class="block px-4 py-2 text-gray-700 hover:bg-purple-50">
+                                    <i class="fas fa-box ml-2"></i>
+                                    طلباتي
+                                </a>
+                                <form method="POST" action="{{ route('auth.logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-right px-4 py-2 text-gray-700 hover:bg-purple-50">
+                                        <i class="fas fa-sign-out-alt ml-2"></i>
+                                        تسجيل الخروج
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <button data-auth-action="login" class="text-gray-700 hover:text-purple-600 transition">
+                            <i class="fas fa-user ml-1"></i>
+                            تسجيل الدخول
+                        </button>
                     @endauth
 
                     <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-purple-600 transition">
@@ -179,9 +205,13 @@
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; {{ date('Y') }} متجر الجمال. جميع الحقوق محفوظة.</p>
+                <p>&copy; {{ date('Y') }} {{ $store_name ?? 'متجر الجمال' }}. جميع الحقوق محفوظة.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Auth Modal Script -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="{{ asset('js/auth-modal.js') }}"></script>
 </body>
 </html>

@@ -30,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
                 'store_logo' => Setting::get('store_logo'),
                 'store_favicon' => Setting::get('store_favicon'),
                 'store_name' => Setting::get('store_name', config('app.name')),
+                'currency' => Setting::get('currency', 'ILS'),
+                'currency_symbol' => Setting::get('currency_symbol', '₪'),
             ]);
         });
     }
