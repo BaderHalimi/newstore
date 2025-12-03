@@ -25,11 +25,9 @@ class TransactionResource extends Resource
 
     protected static ?string $pluralModelLabel = 'المعاملات';
 
-    protected static ?int $navigationSort = 3;
-
-    protected static ?string $navigationGroup = 'الإدارة المالية';
-
-    public static function form(Form $form): Form
+    protected static ?int $navigationSort = 2;
+    
+    protected static ?string $navigationGroup = 'الإدارة المالية';    public static function form(Form $form): Form
     {
         return $form
             ->schema([

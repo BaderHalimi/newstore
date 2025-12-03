@@ -40,8 +40,8 @@ class CouponResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(50)
-                            ->uppercase()
-                            ->helperText('الكود الذي سيستخدمه العميل'),
+                            ->rule('regex:/^[A-Z0-9]+$/')
+                            ->helperText('الكود الذي سيستخدمه العميل (أحرف كبيرة وأرقام فقط)'),
 
                         Forms\Components\Select::make('type')
                             ->label('نوع الخصم')

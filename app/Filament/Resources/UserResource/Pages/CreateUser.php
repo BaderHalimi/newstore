@@ -3,11 +3,10 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
-use Filament\Resources\Pages\Page;
+use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
 
-class FinancialReports extends Page
+class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
-
-    protected static string $view = 'filament.resources.user-resource.pages.financial-reports';
 }

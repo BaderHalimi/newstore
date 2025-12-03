@@ -26,6 +26,8 @@ class OrderResource extends Resource
     protected static ?string $pluralModelLabel = 'الطلبات';
 
     protected static ?int $navigationSort = 1;
+    
+    protected static ?string $navigationGroup = 'المبيعات';
 
     public static function form(Form $form): Form
     {
@@ -207,6 +209,13 @@ class OrderResource extends Resource
                     ->sortable(),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('user_id')
+                    ->label('العميل')
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->native(false),
+                    
                 Tables\Filters\SelectFilter::make('status')
                     ->label('حالة الطلب')
                     ->options([
@@ -215,7 +224,8 @@ class OrderResource extends Resource
                         'shipped' => 'تم الشحن',
                         'delivered' => 'تم التوصيل',
                         'cancelled' => 'ملغي',
-                    ]),
+                    ])
+                    ->native(false),
 
                 Tables\Filters\SelectFilter::make('payment_status')
                     ->label('حالة الدفع')
@@ -223,7 +233,8 @@ class OrderResource extends Resource
                         'pending' => 'قيد الانتظار',
                         'paid' => 'مدفوع',
                         'failed' => 'فشل',
-                    ]),
+                    ])
+                    ->native(false),
 
                 Tables\Filters\Filter::make('created_at')
                     ->form([
